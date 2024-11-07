@@ -1,2 +1,2 @@
-# AQLIA
+# AQLIA | عقليّة
 AQLIA | عقليّة
