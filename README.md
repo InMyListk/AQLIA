@@ -1,0 +1,2 @@
+# AQLIA
+AQLIA | عقليّة
