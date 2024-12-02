@@ -1,5 +1,6 @@
 {
   "name": "backend",
+  "type": "module",
   "version": "1.0.0",
   "description": "AQLIA BACKEND",
   "main": "index.js",
@@ -10,17 +11,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^22.9.0",
+    "@distube/ytdl-core": "^4.15.1",
+    "assemblyai": "^4.8.0",
+    "axios": "^1.7.8",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
     "ts-node": "^10.9.2",
-    "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
-    "@types/jsonwebtoken": "^9.0.7"
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^22.10.1",
+    "tsx": "^4.19.2"
   }
 }
