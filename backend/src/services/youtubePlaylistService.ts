@@ -1,9 +1,9 @@
-import { fetchPlaylistItems } from '../repository/youtubePlaylistRepository';
+import { fetchPlaylistItems } from '../repository/youtubePlaylistRepo';
 
-const PLAYLIST_ID: string = 'PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb';
-
-export const processingYoutubeData = async (): Promise<string[]> => {
-  const playlistItems = await fetchPlaylistItems(PLAYLIST_ID);
+export const processingYoutubeData = async (
+  playlistID: string
+): Promise<string[]> => {
+  const playlistItems = await fetchPlaylistItems(playlistID);
   let videos: string[] = [];
 
   playlistItems.map((item: any) => {
@@ -11,8 +11,6 @@ export const processingYoutubeData = async (): Promise<string[]> => {
       videos.push(video.contentDetails.videoId);
     });
   });
-
-  // console.log(videos);
 
   return videos;
 };

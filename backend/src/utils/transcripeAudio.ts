@@ -55,7 +55,9 @@ const uploadWithRetry = async (
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export const transcribeVideo = async (filename: string) => {
+export const transcribeVideo = async (
+  filename: string
+): Promise<string | undefined> => {
   try {
     const filePath = path.resolve(__dirname, `../audios/${filename}.mp3`);
     console.log('Starting upload...');
@@ -64,9 +66,12 @@ export const transcribeVideo = async (filename: string) => {
 
     const transcript = await client.transcripts.transcribe({
       audio_url: audioUrl,
+      speech_model: 'nano',
+      language_code: 'ar',
     });
 
-    console.log('Transcription:', transcript.text);
+    // console.log('Transcription:', transcript.text);
+    return transcript.text!;
   } catch (error) {
     console.error('Error:', error.response?.data || error.message);
   }

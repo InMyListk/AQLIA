@@ -48,8 +48,3 @@ export const youtubeAudioDownloader = async (
     throw error;
   }
 };
-
-// Example usage
-// youtubeAudioDownloader('DTxHyVn0ODg')
-//   .then((filePath) => console.log(`Audio file downloaded to: ${filePath}`))
-//   .catch((error) => console.error('Failed to download audio:', error));
