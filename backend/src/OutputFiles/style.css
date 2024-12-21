@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Noto+Kufi+Arabic:wght@100..900&display=swap');
+
+body {
+  list-style-position: outside; /* Ensures the dots are outside */
+  text-align: right; /* Aligns the text to the right */
+  padding-right: 20px;
+  direction: rtl;
+
+  /* font-family: "Cairo", sans-serif !important;
+    font-size: 14px !important; */
+}

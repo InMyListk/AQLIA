@@ -17,19 +17,31 @@ const playListVideoProcessing = async () => {
     let videoIndex = 0;
 
     // For of loop to iterate to each video and proccessing it and saving it
+    let language_code = '';
+
     for (const video of playListVideos) {
       await youtubeAudioDownloader(video); // Function that downloads the video audio
 
-      const videoText = await transcribeVideo(video); // Function that trancribe the audio
+      const transcribed = await transcribeVideo(video);
 
-      const fromatedText = await generateFormattedText(videoText!); // Function that formating the audio text by AI
+      if (!transcribed) {
+        throw new Error(`undefined text and language code`);
+      }
+
+      const { text, code } = transcribed; // Function that trancribe the audio
+
+      language_code = code;
+
+      const fromatedText = await generateFormattedText(text!); // Function that formating the audio text by AI
 
       await saveFormattedText(fromatedText!, videoIndex, PLAYLIST_ID); // Function that save the formated text in markdown format
       videoIndex++;
     }
 
+    console.log('All videos processed. Now converting to PDF...');
+
     // After Proccessing the video and save it, this function take all the proccessed videos and combine them to one pdf book
-    await convertMdToPdf(PLAYLIST_ID);
+    await convertMdToPdf(PLAYLIST_ID, language_code);
   } catch (error) {
     throw new Error(`${error}`);
   }

@@ -28,7 +28,7 @@ const uploadLocalFile = async (filePath: string): Promise<string> => {
     );
     console.log('File uploaded successfully!');
     return response.data.upload_url;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Upload failed:', error.response?.data || error.message);
     throw error;
   }
@@ -55,9 +55,14 @@ const uploadWithRetry = async (
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+type TranscribeVideoType = {
+  text: string;
+  code: string;
+};
+
 export const transcribeVideo = async (
   filename: string
-): Promise<string | undefined> => {
+): Promise<TranscribeVideoType | undefined> => {
   try {
     const filePath = path.resolve(__dirname, `../audios/${filename}.mp3`);
     console.log('Starting upload...');
@@ -66,13 +71,17 @@ export const transcribeVideo = async (
 
     const transcript = await client.transcripts.transcribe({
       audio_url: audioUrl,
+      language_detection: true,
       speech_model: 'nano',
-      language_code: 'ar',
+      // language_code: 'ar',
     });
 
-    // console.log('Transcription:', transcript.text);
-    return transcript.text!;
-  } catch (error) {
+    console.log('Transcription:', transcript.language_code);
+    return {
+      text: transcript.text || '',
+      code: transcript.language_code || '',
+    };
+  } catch (error: any) {
     console.error('Error:', error.response?.data || error.message);
   }
 };

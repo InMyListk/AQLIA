@@ -3,10 +3,14 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { PDFDocument } from 'pdf-lib';
 import markdownPdf from 'markdown-pdf';
+import { promisify } from 'util';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export const convertMdToPdf = async (playlist_id: string) => {
+export const convertMdToPdf = async (
+  playlist_id: string,
+  language_code: string
+) => {
   const pdfFile = 'FormattedOutput.pdf';
 
   const pdfOutputPath = path.resolve(
@@ -58,8 +62,25 @@ export const convertMdToPdf = async (playlist_id: string) => {
       // Convert each markdown file to PDF
       const tempPdfPath = path.resolve(mdOutputPath, 'temp.pdf');
 
-      markdownPdf().from(markdownFile).to(tempPdfPath);
+      const markdownPdfTo = promisify(
+        (
+          markdownFile: string,
+          tempPdfPath: string,
+          callback: (() => void) | undefined
+        ) => {
+          markdownPdf(
+            language_code === 'ar'
+              ? {
+                  cssPath: path.resolve(__dirname, '../OutputFiles/style.css'),
+                }
+              : {}
+          )
+            .from(markdownFile)
+            .to(tempPdfPath, callback);
+        }
+      );
 
+      await markdownPdfTo(markdownFile, tempPdfPath);
       // Read the converted PDF and append it to the merged PDF
       const tempPdfBytes = fs.readFileSync(tempPdfPath);
       const tempPdfDoc = await PDFDocument.load(tempPdfBytes);
@@ -84,6 +105,6 @@ export const convertMdToPdf = async (playlist_id: string) => {
 };
 
 // For testing
-const PLAYLIST_ID: string = 'PL8pYI62gCNsXfVcwXprTbJEWxQg3qlUur';
+const PLAYLIST_ID: string = 'PLlrATfBNZ98eEGlhsZpuBnGe66RnymvJ6';
 
-convertMdToPdf(PLAYLIST_ID);
+convertMdToPdf(PLAYLIST_ID, 'ar');
