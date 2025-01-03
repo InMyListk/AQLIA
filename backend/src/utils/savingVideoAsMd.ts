@@ -11,6 +11,13 @@ export const saveFormattedText = async (
   playlist_id: string
 ) => {
   try {
+    const MarkdownDir = path.resolve(__dirname, `../OutputFiles/Markdown`);
+
+    // Create the folder if it dosn't exist
+    if (!fs.existsSync(MarkdownDir)) {
+      fs.mkdirSync(MarkdownDir, { recursive: true });
+    }
+
     const markdownFile = `${playlist_id}${videoIndex}.md`;
 
     const mdOutputPath = path.resolve(

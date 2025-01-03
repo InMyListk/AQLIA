@@ -6,7 +6,7 @@ import { saveFormattedText } from '../utils/savingVideoAsMd';
 import { convertMdToPdf } from '../utils/convertMdToPDF';
 
 // Example
-const PLAYLIST_ID: string = 'PL8pYI62gCNsXfVcwXprTbJEWxQg3qlUur';
+const PLAYLIST_ID: string = 'PL4cUxeGkcC9h77dJ-QJlwGlZlTd4ecZOA';
 
 const playListVideoProcessing = async () => {
   try {
@@ -20,7 +20,11 @@ const playListVideoProcessing = async () => {
     let language_code = '';
 
     for (const video of playListVideos) {
-      await youtubeAudioDownloader(video); // Function that downloads the video audio
+      try {
+        await youtubeAudioDownloader(video);
+      } catch (error) {
+        continue;
+      } // Function that downloads the video audio
 
       const transcribed = await transcribeVideo(video);
 

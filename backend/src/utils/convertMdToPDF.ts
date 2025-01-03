@@ -11,6 +11,14 @@ export const convertMdToPdf = async (
   playlist_id: string,
   language_code: string
 ) => {
+  const audiosDir = path.resolve(__dirname, '../audios');
+
+  const pdfOutputDir = path.resolve(__dirname, `../OutputFiles/PDF/`);
+
+  if (!fs.existsSync(pdfOutputDir)) {
+    fs.mkdirSync(pdfOutputDir, { recursive: true });
+  }
+
   const pdfFile = 'FormattedOutput.pdf';
 
   const pdfOutputPath = path.resolve(
@@ -71,9 +79,17 @@ export const convertMdToPdf = async (
           markdownPdf(
             language_code === 'ar'
               ? {
-                  cssPath: path.resolve(__dirname, '../OutputFiles/style.css'),
+                  cssPath: path.resolve(
+                    __dirname,
+                    '../OutputFiles/styleRTL.css'
+                  ),
                 }
-              : {}
+              : {
+                  cssPath: path.resolve(
+                    __dirname,
+                    '../OutputFiles/styleLTR.css'
+                  ),
+                }
           )
             .from(markdownFile)
             .to(tempPdfPath, callback);
@@ -99,6 +115,15 @@ export const convertMdToPdf = async (
     fs.writeFileSync(pdfOutputPath, mergedPdfBytes);
 
     console.log('Created PDF:', pdfOutputPath);
+
+    // Remove the audios file after processing it
+    fs.rm(audiosDir, { recursive: true }, (err) => {
+      if (err) {
+        throw new Error(
+          `There is an error removing audios directory error: ${err}`
+        );
+      }
+    });
   } catch (error) {
     console.error('Error during conversion:', error);
   }
@@ -107,4 +132,4 @@ export const convertMdToPdf = async (
 // For testing
 const PLAYLIST_ID: string = 'PLlrATfBNZ98eEGlhsZpuBnGe66RnymvJ6';
 
-convertMdToPdf(PLAYLIST_ID, 'ar');
+convertMdToPdf(PLAYLIST_ID, 'en');
