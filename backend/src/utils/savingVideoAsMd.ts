@@ -8,7 +8,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const saveFormattedText = async (
   text: string,
   videoIndex: number,
-  playlist_id: string
+  playlist_id?: string,
+  videoID?: string
 ) => {
   try {
     const MarkdownDir = path.resolve(__dirname, `../OutputFiles/Markdown`);
@@ -18,7 +19,7 @@ export const saveFormattedText = async (
       fs.mkdirSync(MarkdownDir, { recursive: true });
     }
 
-    const markdownFile = `${playlist_id}${videoIndex}.md`;
+    const markdownFile = `${playlist_id || videoID}${videoIndex}.md`;
 
     const mdOutputPath = path.resolve(
       __dirname,

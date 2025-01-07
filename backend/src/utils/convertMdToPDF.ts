@@ -8,8 +8,9 @@ import { promisify } from 'util';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const convertMdToPdf = async (
-  playlist_id: string,
-  language_code: string
+  language_code: string,
+  videoID?: string,
+  playlist_id?: string
 ) => {
   const audiosDir = path.resolve(__dirname, '../audios');
 
@@ -37,7 +38,7 @@ export const convertMdToPdf = async (
       .map((file) => {
         const fileNameWithExt: string = path.parse(file).name;
         const orderNumber: number = Number(
-          fileNameWithExt.slice(playlist_id.length)
+          fileNameWithExt.slice(playlist_id?.length || videoID?.length)
         );
         fileIndices.push({
           fileName: file,
@@ -130,6 +131,6 @@ export const convertMdToPdf = async (
 };
 
 // For testing
-const PLAYLIST_ID: string = 'PLlrATfBNZ98eEGlhsZpuBnGe66RnymvJ6';
+// const PLAYLIST_ID: string = 'PLlrATfBNZ98eEGlhsZpuBnGe66RnymvJ6';
 
-convertMdToPdf(PLAYLIST_ID, 'en');
+// convertMdToPdf(PLAYLIST_ID, 'en');
