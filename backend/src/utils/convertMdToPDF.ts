@@ -1,9 +1,10 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { PDFDocument } from 'pdf-lib';
-import markdownPdf from 'markdown-pdf';
-import { promisify } from 'util';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { PDFDocument } from "pdf-lib";
+import markdownPdf from "markdown-pdf";
+import { promisify } from "util";
+import { error } from "console";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -12,7 +13,7 @@ export const convertMdToPdf = async (
   videoID?: string,
   playlist_id?: string
 ) => {
-  const audiosDir = path.resolve(__dirname, '../audios');
+  const audiosDir = path.resolve(__dirname, "../audios");
 
   const pdfOutputDir = path.resolve(__dirname, `../OutputFiles/PDF/`);
 
@@ -20,7 +21,7 @@ export const convertMdToPdf = async (
     fs.mkdirSync(pdfOutputDir, { recursive: true });
   }
 
-  const pdfFile = 'FormattedOutput.pdf';
+  const pdfFile = "FormattedOutput.pdf";
 
   const pdfOutputPath = path.resolve(
     __dirname,
@@ -30,11 +31,17 @@ export const convertMdToPdf = async (
 
   let fileIndices: { fileName: string; order: number }[] = [];
 
+  if (!playlist_id && !videoID) {
+    throw new Error(`Incorrect playlist or video id error: ${error}`);
+  }
+
   try {
     // Read Markdown files and create an array of absolute file paths
     const markdownFiles = fs
       .readdirSync(mdOutputPath)
-      .filter((file) => file.endsWith('.md')) // Ensure only Markdown files are included
+      .filter(
+        (file) => file.endsWith(".md") && file.includes(playlist_id || videoID!)
+      ) // Ensure only Markdown files are included
       .map((file) => {
         const fileNameWithExt: string = path.parse(file).name;
         const orderNumber: number = Number(
@@ -48,7 +55,7 @@ export const convertMdToPdf = async (
       });
 
     if (markdownFiles.length === 0) {
-      console.log('No Markdown files found to process.');
+      console.log("No Markdown files found to process.");
       return;
     }
 
@@ -62,14 +69,14 @@ export const convertMdToPdf = async (
       path.resolve(mdOutputPath, file.fileName)
     );
 
-    console.log('Markdown files to process:', sortedMarkdownFiles);
+    console.log("Markdown files to process:", sortedMarkdownFiles);
 
     // Create a new PDF document using pdf-lib
     const mergedPdf = await PDFDocument.create();
 
     for (const markdownFile of sortedMarkdownFiles) {
       // Convert each markdown file to PDF
-      const tempPdfPath = path.resolve(mdOutputPath, 'temp.pdf');
+      const tempPdfPath = path.resolve(mdOutputPath, "temp.pdf");
 
       const markdownPdfTo = promisify(
         (
@@ -78,17 +85,17 @@ export const convertMdToPdf = async (
           callback: (() => void) | undefined
         ) => {
           markdownPdf(
-            language_code === 'ar'
+            language_code === "ar"
               ? {
                   cssPath: path.resolve(
                     __dirname,
-                    '../OutputFiles/styleRTL.css'
+                    "../OutputFiles/styleRTL.css"
                   ),
                 }
               : {
                   cssPath: path.resolve(
                     __dirname,
-                    '../OutputFiles/styleLTR.css'
+                    "../OutputFiles/styleLTR.css"
                   ),
                 }
           )
@@ -115,7 +122,7 @@ export const convertMdToPdf = async (
     const mergedPdfBytes = await mergedPdf.save();
     fs.writeFileSync(pdfOutputPath, mergedPdfBytes);
 
-    console.log('Created PDF:', pdfOutputPath);
+    console.log("Created PDF:", pdfOutputPath);
 
     // Remove the audios file after processing it
     fs.rm(audiosDir, { recursive: true }, (err) => {
@@ -126,7 +133,7 @@ export const convertMdToPdf = async (
       }
     });
   } catch (error) {
-    console.error('Error during conversion:', error);
+    console.error("Error during conversion:", error);
   }
 };
 

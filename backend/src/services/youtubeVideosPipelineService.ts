@@ -1,12 +1,12 @@
-import { transcribeVideo } from '../utils/transcripeAudio';
-import { youtubeAudioDownloader } from '../utils/youtubeAudioDonwloader';
-import { processingYoutubeData } from './youtubePlaylistService';
-import { generateFormattedText } from '../utils/formatingTextAi';
-import { saveFormattedText } from '../utils/savingVideoAsMd';
-import { convertMdToPdf } from '../utils/convertMdToPDF';
+import { transcribeVideo } from "../utils/transcripeAudio";
+import { youtubeAudioDownloader } from "../utils/youtubeAudioDonwloader";
+import { processingYoutubeData } from "./youtubePlaylistService";
+import { generateFormattedText } from "../utils/formatingTextAi";
+import { saveFormattedText } from "../utils/savingVideoAsMd";
+import { convertMdToPdf } from "../utils/convertMdToPDF";
 
 // Example
-const PLAYLIST_ID: string = 'PL4cUxeGkcC9h77dJ-QJlwGlZlTd4ecZOA';
+const PLAYLIST_ID: string = "PL8pYI62gCNsWTppELEUCpforC4avEiLox";
 
 class YouTubeVideosPipeline {
   private async processVideo(
@@ -33,7 +33,7 @@ class YouTubeVideosPipeline {
       const playListVideos: string[] = await processingYoutubeData(playlistID);
 
       let videoIndex = 0;
-      let languageCode = '';
+      let languageCode = "";
 
       for (const video of playListVideos) {
         try {
@@ -46,10 +46,10 @@ class YouTubeVideosPipeline {
         }
       }
 
-      console.log('All videos processed. Now converting to PDF...');
+      console.log("All videos processed. Now converting to PDF...");
       await convertMdToPdf(languageCode, undefined, playlistID);
     } catch (error) {
-      console.error('Failed to process playlist videos.', error);
+      console.error("Failed to process playlist videos.", error);
     }
   }
 
@@ -59,7 +59,7 @@ class YouTubeVideosPipeline {
       console.log(`Finished processing video`);
       await convertMdToPdf(languageCode, videoID);
     } catch (error) {
-      console.error('Failed to process video.', error);
+      console.error("Failed to process video.", error);
     }
   }
 }
@@ -68,5 +68,5 @@ class YouTubeVideosPipeline {
 
 const YoutubeVideosPiplineObj = new YouTubeVideosPipeline();
 
-// YoutubeVideosPiplineObj.playListVideosProcessing(PLAYLIST_ID);
-YoutubeVideosPiplineObj.videoProcessing('sTJct25q69w');
+YoutubeVideosPiplineObj.playListVideosProcessing(PLAYLIST_ID);
+// YoutubeVideosPiplineObj.videoProcessing("1Di8X2vRNRE");
